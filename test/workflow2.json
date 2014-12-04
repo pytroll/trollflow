@@ -13,7 +13,7 @@
                 "uri" : "/home/rhp/git/test_data/satellite"
             }
         },
-        "readers.mpop.NOAA19" : {
+        "readers.mpop_reader.NOAA19" : {
             "out_data" : {
             }
         },

@@ -14,7 +14,9 @@ class Unarchiver(AbstractWorkflowComponent):
         """Unarchiver..."""
         try:
             print context[self.slots[0]]["uri"]
-            cmd = ["tar", "-xzvf", context[self.slots[0]]["uri"]]
+            cmd = ["tar", "-xzvf",
+                   context[self.slots[0]]["uri"],
+                   "-C", context[self.slots[1]]["uri"]]
             subprocess.call(cmd)
         except Exception, e:
             raise e
