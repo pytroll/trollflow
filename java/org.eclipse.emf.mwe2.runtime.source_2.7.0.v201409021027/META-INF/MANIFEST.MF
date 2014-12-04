@@ -1,0 +1,45 @@
+Manifest-Version: 1.0
+Ant-Version: Apache Ant 1.8.3
+Eclipse-SourceBundle: org.eclipse.emf.mwe2.runtime;version="2.7.0.v201
+ 409021027";roots="."
+Bundle-Vendor: Eclipse Modeling Project
+Bundle-Name: Modeling Workflow Engine 2 Runtime Source
+Bundle-SymbolicName: org.eclipse.emf.mwe2.runtime.source
+Created-By: 1.6.0_45-b06 (Sun Microsystems Inc.)
+Bundle-Version: 2.7.0.v201409021027
+Bundle-ManifestVersion: 2
+
+Name: org/eclipse/emf/mwe2/runtime/workflow/AbstractCompositeWorkflowC
+ omponent.java
+SHA1-Digest: XZe41ujE3dn27KpBhGdkizbSupw=
+
+Name: org/eclipse/emf/mwe2/runtime/Mandatory.java
+SHA1-Digest: P3pAkd9ZXl4RMFk/+nvM5+lgKxQ=
+
+Name: META-INF/eclipse.inf
+SHA1-Digest: 09gN05tobgS/MdtqyTNQhOhB73M=
+
+Name: org/eclipse/emf/mwe2/runtime/workflow/IWorkflowContext.java
+SHA1-Digest: lkPG1F8yoBnZ+nf9fT4dYLvad5I=
+
+Name: org/eclipse/emf/mwe2/runtime/IFactory.java
+SHA1-Digest: rznHOLN1xuDGzyp+a/3VHH+j9wE=
+
+Name: org/eclipse/emf/mwe2/runtime/workflow/WorkflowContextImpl.java
+SHA1-Digest: 3UzyHaywZUiap4ph1CnyWUCokD8=
+
+Name: org/eclipse/emf/mwe2/runtime/workflow/IWorkflowComponent.java
+SHA1-Digest: jLTkB6g3SVChpSfZ3faB5sfVo6I=
+
+Name: org/eclipse/emf/mwe2/runtime/Matches.java
+SHA1-Digest: m4iVU8Gc6PZdDDp2iq2FDYzI5VY=
+
+Name: org/eclipse/emf/mwe2/runtime/workflow/Workflow.java
+SHA1-Digest: 3FVUgc7guHzkiirwPjy1fV8iUhk=
+
+Name: about.html
+SHA1-Digest: 5NJCBTSdmvQK0/EKnCNmQtuXN10=
+
+Name: org/eclipse/emf/mwe2/runtime/workflow/IWorkflow.java
+SHA1-Digest: 2kWKzk3M/gA/kJNt5bNysslKq8g=
+

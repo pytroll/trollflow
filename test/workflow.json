@@ -1,0 +1,18 @@
+{
+    "Workflow" : {
+        "readers.txt_reader.TXTFileReader" : {
+            "in_file" : {
+                "uri" : "/tmp/test.txt"
+            }
+        },
+        "transformers.capitalizer.Capitalizer" : {
+            "in_file" : {},
+            "out_file" : {}
+        },
+        "writers.txt_writer.TXTFileWriter" : {
+            "out_file" : {
+                "uri" : "/tmp/test_cap.txt"
+            }
+        }
+    }
+}
