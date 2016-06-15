@@ -22,26 +22,26 @@ class WorkflowRunner(object):
 
             try:
                 component_clazz.pre_invoke()
-            except Exception, e:
+            except Exception, err:
                 msg = "Error in execution of {0}.pre_invoke()".format(
                     component_clazz)
                 logger.error(msg)
-                raise WorkflowException(msg, e)
+                raise WorkflowException(msg, err)
 
             try:
                 component_clazz.invoke(context)
-            except Exception, e:
+            except Exception, err:
                 msg = "Error in execution of {0}.invoke()".format(
                     component_clazz)
                 logger.error(msg)
-                raise WorkflowException(msg, e)
+                raise WorkflowException(msg, err)
             try:
                 component_clazz.post_invoke()
-            except Exception, e:
+            except Exception, err:
                 msg = "Error in execution of {0}.post_invoke()".format(
                     component_clazz)
                 logger.error(msg)
-                raise WorkflowException(msg, e)
+                raise WorkflowException(msg, err)
 
 
 class WorkflowException(Exception):
