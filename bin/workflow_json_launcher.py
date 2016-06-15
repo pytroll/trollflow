@@ -24,17 +24,17 @@ class WorkflowLauncher(object):
     def read_workflow(self, path_to_workflow):
         logger.info("Reading workflow {0}".format(path_to_workflow))
         try:
-            wf_file = open(path_to_workflow, "r")
-            wf_json_str = wf_file.read()
-            return json.loads(wf_json_str)
+            with open(path_to_workflow, "r") as fid:
+                config_str = fid.read()
+            return json.loads(config_str)
         except Exception, err:
             raise err
 
-    def build_context(self, json_dict):
+    def build_context(self, config):
         logger.info("Constructing context.")
 
         context = {}
-        components = json_dict["Workflow"]
+        components = config["Workflow"]
 
         for module, slots in sorted(components.items()):
             for slot_name, slot_details in slots.items():
@@ -51,13 +51,13 @@ class WorkflowLauncher(object):
                     context.update(slot)
 
         # add global configuration here
-        if "global_config" in json_dict.keys():
-            if isinstance(json_dict["global_config"], dict):
-                context["global_config"] = json_dict["global_config"]
-            elif isinstance(json_dict["global_config"], str):
+        if "global_config" in config.keys():
+            if isinstance(config["global_config"], dict):
+                context["global_config"] = config["global_config"]
+            elif isinstance(config["global_config"], str):
                 # trying to build a dict from configuration code...
                 import utils
-                global_config = utils.get_class(json_dict["global_config"])
+                global_config = utils.get_class(config["global_config"])
                 context["global_config"] = global_config
 
         return context
