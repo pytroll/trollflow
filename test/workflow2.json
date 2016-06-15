@@ -5,7 +5,7 @@
         "channel" : [10.8]
     },
     "Workflow" : {
-        "readers.unarchiver.Unarchiver" : {
+        "trollflow.examples.readers.unarchiver.Unarchiver" : {
             "in_file" : {
                 "uri" : "/home/rhp/git/test_data/satellite.tar.gz"
             },
@@ -13,11 +13,11 @@
                 "uri" : "/home/rhp/git/test_data/satellite"
             }
         },
-        "readers.mpop_reader.NOAA19" : {
+        "trollflow.examples.readers.mpop_reader.NOAA19" : {
             "out_data" : {
             }
         },
-        "transformers.histogram.Histogramer" : {
+        "trollflow.examples.transformers.histogram.Histogramer" : {
             "out_data" : {},
             "out_image" : {
                 "uri" : "/tmp/histogram.jpg"
