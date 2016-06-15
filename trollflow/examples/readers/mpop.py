@@ -1,4 +1,4 @@
-from workflow.workflow_component import AbstractWorkflowComponent
+from trollflow.workflow_component import AbstractWorkflowComponent
 from mpop.satellites import PolarFactory
 from datetime import datetime
 
