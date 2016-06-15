@@ -46,7 +46,7 @@ setup(name="trollflow",
       data_files=[],
       zip_safe=False,
       install_requires=['mpop', 'posttroll',
-                        'simplejson',]
+                        'simplejson'],
       test_requires=['mock'],
       # test_suite='trollflow.tests.suite',
       )
