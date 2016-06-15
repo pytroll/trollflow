@@ -1,7 +1,9 @@
+#!/usr/bin/env python
+
 import yaml
 from trollflow import workflow_runner
 import logging
-from sys import argv
+import sys
 
 logger = logging.getLogger(__name__)
 
@@ -56,15 +58,19 @@ class WorkflowLauncher(object):
                 context["global_config"] = config["global_config"]
             elif isinstance(config["global_config"], str):
                 # trying to build a dict from configuration code...
-                import utils
+                from trollflow import utils
                 global_config = utils.get_class(config["global_config"])
                 context["global_config"] = global_config
 
         return context
 
-if __name__ == '__main__':
-    script, filename = argv
+def main():
+    filename = sys.argv[1]
 
     logger.info("Launching workflow {0}".format(filename))
-    wf = WorkflowLauncher(filename)
-    wf.run()
+    wf_ = WorkflowLauncher(filename)
+    wf_.run()
+
+if __name__ == '__main__':
+    main()
+
