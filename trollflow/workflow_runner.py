@@ -1,4 +1,5 @@
 import logging
+from trollflow import utils
 
 logger = logging.getLogger(__name__)
 
@@ -10,7 +11,6 @@ class WorkflowRunner(object):
         self.workflow = workflow["Workflow"]
 
     def get_class(self, clazz_path):
-        import utils
         return utils.get_class(clazz_path)
 
     def run(self, context):
@@ -18,7 +18,6 @@ class WorkflowRunner(object):
             clazz = self.get_class(module)
             component_clazz = clazz()
             component_clazz.slots = sorted(self.workflow[module].keys())
-            print component_clazz.slots
 
             try:
                 component_clazz.pre_invoke()
