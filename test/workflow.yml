@@ -5,7 +5,7 @@ Workflow:
 
   - trollflow.examples.transformers.capitalizer.Capitalizer:
       in_file:
-        out_file:
+      out_file:
 
   - trollflow.examples.writers.txt_writer.TXTFileWriter:
       out_file:

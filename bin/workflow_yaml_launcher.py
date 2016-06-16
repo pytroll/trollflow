@@ -10,11 +10,6 @@ logger = logging.getLogger(__name__)
 
 class WorkflowLauncher(object):
 
-    fmt = '[%(levelname)s: %(asctime)s: %(name)s] %(message)s'
-    logging.basicConfig(level=logging.DEBUG,
-                        format=fmt,
-                        datefmt='%Y-%m-%d %H:%M:%S')
-
     def __init__(self, path_to_workflow):
         self.workflow = self.read_workflow(path_to_workflow)
         self.context = self.build_context(self.workflow)
@@ -25,12 +20,9 @@ class WorkflowLauncher(object):
 
     def read_workflow(self, path_to_workflow):
         logger.info("Reading workflow {0}".format(path_to_workflow))
-        try:
-            with open(path_to_workflow, "r") as fid:
-                config = yaml.safe_load(fid)
-            return config
-        except Exception, err:
-            raise err
+        with open(path_to_workflow, "r") as fid:
+            config = yaml.safe_load(fid)
+        return config
 
     def build_context(self, config):
         logger.info("Constructing context.")
@@ -38,7 +30,8 @@ class WorkflowLauncher(object):
         context = {}
         components = config["Workflow"]
 
-        for module, slots in sorted(components.items()):
+        for component in components:
+            module, slots = component.items()[0]
             for slot_name, slot_details in slots.items():
                 if not slot_name in context:
                     slot = {slot_name: {"content": None}}
@@ -65,6 +58,13 @@ class WorkflowLauncher(object):
         return context
 
 def main():
+    logger = logging.getLogger('workflow_yaml_launcher')
+
+    fmt = '[%(levelname)s: %(asctime)s: %(name)s] %(message)s'
+    logging.basicConfig(level=logging.DEBUG,
+                        format=fmt,
+                        datefmt='%Y-%m-%d %H:%M:%S')
+
     filename = sys.argv[1]
 
     logger.info("Launching workflow {0}".format(filename))
@@ -73,4 +73,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
