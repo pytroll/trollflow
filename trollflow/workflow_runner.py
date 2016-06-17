@@ -19,29 +19,9 @@ class WorkflowRunner(object):
             component_clazz = clazz()
             component_clazz.slots = sorted(self.workflow[module].keys())
 
-            try:
-                component_clazz.pre_invoke()
-            except Exception, err:
-                msg = "Error in execution of {0}.pre_invoke()".format(
-                    component_clazz)
-                logger.error(msg)
-                raise WorkflowException(msg, err)
-
-            try:
-                component_clazz.invoke(context)
-            except Exception, err:
-                msg = "Error in execution of {0}.invoke()".format(
-                    component_clazz)
-                logger.error(msg)
-                raise WorkflowException(msg, err)
-            try:
-                component_clazz.post_invoke()
-            except Exception, err:
-                msg = "Error in execution of {0}.post_invoke()".format(
-                    component_clazz)
-                logger.error(msg)
-                raise WorkflowException(msg, err)
-
+            component_clazz.pre_invoke()
+            component_clazz.invoke(context)
+            component_clazz.post_invoke()
 
 class WorkflowException(Exception):
     pass
