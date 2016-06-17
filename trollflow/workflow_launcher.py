@@ -107,22 +107,15 @@ class WorkflowStreamer(Thread):
     def build_context(self, config):
         logger.info("Constructing context.")
 
-        context = {}
+        context = {"input_queue": self.input_queue,
+                   "output_queue": self.output_queue}
         components = config["Workflow"]
 
         for component in components:
             module, slots = component.items()[0]
             for slot_name, slot_details in slots.items():
                 if not slot_name in context:
-                    slot = {slot_name: {"content": None}}
-                    if slot_details:
-                        uri = slot_details["uri"]
-                        slot[slot_name]["uri"] = uri
-                    context.update(slot)
-                else:
-                    if slot_details:
-                        uri = slot_details["uri"]
-                        slot[slot_name]["uri"] = uri
+                    slot = {slot_name: {"content": slot_details}}
                     context.update(slot)
 
         # add global configuration here
