@@ -10,18 +10,39 @@ from trollflow import utils
 logger = logging.getLogger(__name__)
 
 
-class WorkflowLauncher(object):
+class WorkflowStreamer(Thread):
 
     def __init__(self, path_to_workflow=None, config=None):
+        Thread.__init__(self)
         if path_to_workflow is not None:
             self.workflow = self.read_workflow(path_to_workflow)
         else:
             self.workflow = config
-        self.context = self.build_context(self.workflow)
+
+        self.input_queue = None
+        self.output_queue = Queue.Queue()
+        self._loop = True
+
+    def stop(self):
+        self._loop = False
 
     def run(self):
-        runner = workflow_runner.WorkflowRunner(self.workflow)
-        runner.run(self.context)
+        while self._loop:
+            if self.input_queue is None:
+                time.sleep(1)
+                continue
+            try:
+                data = self.input_queue.get(True, 1)
+            except Queue.Empty:
+                continue
+            context = self.build_context(self.workflow)
+            context['content'] = data
+            runner = workflow_runner.WorkflowRunner(self.workflow)
+            thr = Thread(target=runner.run, args=[context])
+            thr.start()
+            thr.join()
+            #thrs.append(thr)
+            #runner.run(context)
 
     def read_workflow(self, path_to_workflow):
         logger.info("Reading workflow %s", path_to_workflow)
@@ -32,22 +53,15 @@ class WorkflowLauncher(object):
     def build_context(self, config):
         logger.info("Constructing context.")
 
-        context = {}
+        context = {"input_queue": self.input_queue,
+                   "output_queue": self.output_queue}
         components = config["Workflow"]
 
         for component in components:
             module, slots = component.items()[0]
             for slot_name, slot_details in slots.items():
                 if not slot_name in context:
-                    slot = {slot_name: {"content": None}}
-                    if slot_details:
-                        uri = slot_details["uri"]
-                        slot[slot_name]["uri"] = uri
-                    context.update(slot)
-                else:
-                    if slot_details:
-                        uri = slot_details["uri"]
-                        slot[slot_name]["uri"] = uri
+                    slot = {slot_name: {"content": slot_details}}
                     context.update(slot)
 
         # add global configuration here
@@ -60,4 +74,3 @@ class WorkflowLauncher(object):
                 context["global_config"] = global_config
 
         return context
-

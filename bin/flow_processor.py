@@ -8,7 +8,7 @@ import yaml
 import sys
 import time
 
-from trollflow.workflow_launcher import WorkflowStreamer
+from trollflow.workflow_streamer import WorkflowStreamer
 
 def generate_daemon(config_item):
     return config_item['components'][-1]['class']
