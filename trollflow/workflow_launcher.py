@@ -5,6 +5,7 @@ from threading import Thread
 import time
 
 from trollflow import workflow_runner
+from trollflow import utils
 
 logger = logging.getLogger(__name__)
 
@@ -55,7 +56,6 @@ class WorkflowLauncher(object):
                 context["global_config"] = config["global_config"]
             elif isinstance(config["global_config"], str):
                 # trying to build a dict from configuration code...
-                from trollflow import utils
                 global_config = utils.get_class(config["global_config"])
                 context["global_config"] = global_config
 
@@ -122,7 +122,6 @@ class WorkflowStreamer(Thread):
                 context["global_config"] = config["global_config"]
             elif isinstance(config["global_config"], str):
                 # trying to build a dict from configuration code...
-                from trollflow import utils
                 global_config = utils.get_class(config["global_config"])
                 context["global_config"] = global_config
 
