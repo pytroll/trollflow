@@ -51,7 +51,7 @@ setup(name="trollflow",
       scripts=['bin/flow_processor.py',],
       data_files=[],
       zip_safe=False,
-      install_requires=['yaml',],
+      install_requires=['pyyaml',],
       # test_requires=['mock'],
       # test_suite='trollflow.tests.suite',
       )
