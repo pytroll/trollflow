@@ -1,8 +1,10 @@
-#!/usr/bin/env python
-
 import yaml
-from trollflow import workflow_runner
 import logging
+import Queue
+from threading import Thread
+import time
+
+from trollflow import workflow_runner
 
 logger = logging.getLogger(__name__)
 
@@ -60,10 +62,6 @@ class WorkflowLauncher(object):
         return context
 
 
-from Queue import Queue, Empty
-from threading import Thread
-import time
-
 class WorkflowStreamer(Thread):
 
     def __init__(self, path_to_workflow=None, config=None):
@@ -74,7 +72,7 @@ class WorkflowStreamer(Thread):
             self.workflow = config
 
         self.input_queue = None
-        self.output_queue = Queue()
+        self.output_queue = Queue.Queue()
         self._loop = True
 
     def stop(self):
@@ -87,7 +85,7 @@ class WorkflowStreamer(Thread):
                 continue
             try:
                 data = self.input_queue.get(True, 1)
-            except Empty:
+            except Queue.Empty:
                 continue
             context = self.build_context(self.workflow)
             context['content'] = data
