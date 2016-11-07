@@ -53,6 +53,6 @@ setup(name="trollflow",
       zip_safe=False,
       install_requires=['mpop', 'posttroll',
                         'simplejson'],
-      tests_require=['mock'],
+      # tests_require=['mock'],
       # test_suite='trollflow.tests.suite',
       )
