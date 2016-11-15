@@ -5,7 +5,6 @@ class Capitalizer(AbstractWorkflowComponent):
 
     def pre_invoke(self):
         print self.slots
-        pass
 
     def invoke(self, context):
         """Capitalize a string."""

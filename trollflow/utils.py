@@ -10,5 +10,5 @@ def get_class(clazz_path):
     clazz_name = parts[-1]
     module = importlib.import_module(module_name)
     clazz = getattr(module, clazz_name)
-    logger.info("Initialized {0}".format(clazz))
+    logger.info("Initialized %s", str(clazz))
     return clazz

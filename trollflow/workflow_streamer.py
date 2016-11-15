@@ -41,8 +41,8 @@ class WorkflowStreamer(Thread):
             thr = Thread(target=runner.run, args=[context])
             thr.start()
             thr.join()
-            #thrs.append(thr)
-            #runner.run(context)
+            # thrs.append(thr)
+            # runner.run(context)
 
     def read_workflow(self, path_to_workflow):
         logger.info("Reading workflow %s", path_to_workflow)
@@ -59,8 +59,9 @@ class WorkflowStreamer(Thread):
 
         for component in components:
             module, slots = component.items()[0]
+            del module
             for slot_name, slot_details in slots.items():
-                if not slot_name in context:
+                if slot_name not in context:
                     slot = {slot_name: {"content": slot_details}}
                     context.update(slot)
 

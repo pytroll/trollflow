@@ -7,7 +7,6 @@ class TXTFileReader(AbstractWorkflowComponent):
     def pre_invoke(self):
         """Check if file exists."""
         print self.slots
-        pass
 
     def invoke(self, context):
         """Read a text file's contents."""
