@@ -10,10 +10,6 @@ import time
 
 from trollflow.workflow_streamer import WorkflowStreamer
 
-TYPES = {'daemon': generate_daemon,
-         'workflow': generate_workflow}
-
-
 def generate_daemon(config_item):
     """Return a daemon based on the YAML configuration"""
     return config_item['components'][-1]['class']
@@ -24,6 +20,10 @@ def generate_workflow(config_item):
     wfs = WorkflowStreamer(config=config_item)
     wfs.start()
     return wfs
+
+
+TYPES = {'daemon': generate_daemon,
+         'workflow': generate_workflow}
 
 
 def read_yaml_config(fname):
