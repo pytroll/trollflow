@@ -1,6 +1,21 @@
 Changelog
 =========
 
+v0.2.0 (2016-11-22)
+-------------------
+
+- Update changelog. [Panu Lahtinen]
+
+- Bump version: 0.1.0 → 0.2.0. [Panu Lahtinen]
+
+- Fix order of functions and dict using them. [Panu Lahtinen]
+
+- Add docstrings. [Panu Lahtinen]
+
+- Clean main() to separate functions. [Panu Lahtinen]
+
+- Fix style warnings, remove unused imports. [Panu Lahtinen]
+
 v0.1.0 (2016-11-15)
 -------------------
 
