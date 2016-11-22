@@ -12,6 +12,8 @@ logger = logging.getLogger(__name__)
 
 class WorkflowStreamer(Thread):
 
+    """Class for handling streamed workflows"""
+
     def __init__(self, path_to_workflow=None, config=None):
         Thread.__init__(self)
         if path_to_workflow is not None:
@@ -24,9 +26,11 @@ class WorkflowStreamer(Thread):
         self._loop = True
 
     def stop(self):
+        """Stop the workflow streamer."""
         self._loop = False
 
     def run(self):
+        """Run the work flow item"""
         while self._loop:
             if self.input_queue is None:
                 time.sleep(1)
@@ -41,16 +45,21 @@ class WorkflowStreamer(Thread):
             thr = Thread(target=runner.run, args=[context])
             thr.start()
             thr.join()
-            #thrs.append(thr)
-            #runner.run(context)
+            # thrs.append(thr)
+            # runner.run(context)
 
     def read_workflow(self, path_to_workflow):
+        """Read the workflow from YAML configuration file"""
         logger.info("Reading workflow %s", path_to_workflow)
         with open(path_to_workflow, "r") as fid:
             config = yaml.safe_load(fid)
         return config
 
     def build_context(self, config):
+        """Build context dictionary holding input and output queues and
+        configurations.  The actual data will be added when it becomes
+        available from the input queue.
+        """
         logger.info("Constructing context.")
 
         context = {"input_queue": self.input_queue,
@@ -59,8 +68,9 @@ class WorkflowStreamer(Thread):
 
         for component in components:
             module, slots = component.items()[0]
+            del module
             for slot_name, slot_details in slots.items():
-                if not slot_name in context:
+                if slot_name not in context:
                     slot = {slot_name: {"content": slot_details}}
                     context.update(slot)
 

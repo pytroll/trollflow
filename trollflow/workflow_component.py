@@ -19,7 +19,7 @@ class AbstractWorkflowComponent(object):
         return
 
     @abc.abstractmethod
-    def invoke(context):
+    def invoke(self, context):
         """Execute the actual component."""
         return
 

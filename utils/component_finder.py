@@ -40,10 +40,9 @@ class ComponentFinder(object):
 if __name__ == '__main__':
     script, pathname = argv
 
-    logger.info("Findging components in {0}".format(pathname))
+    logger.info("Findging components in %s", pathname)
     finder = ComponentFinder(pathname)
     finder.run()
-
 
 
 # j =ast.parse("""class OI(object):
