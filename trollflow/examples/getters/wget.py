@@ -1,6 +1,5 @@
 from trollflow.workflow_component import AbstractWorkflowComponent
 import logging
-import urllib
 from string import Template
 
 logger = logging.getLogger(__name__)
@@ -18,7 +17,7 @@ class WWWDownloader(AbstractWorkflowComponent):
             path = Template(context[self.slots[0]]["uri"])
             fill_strings = {"hemisphere": self.hemisphere, "day": self.date}
             path = path.substitute(fill_strings)
-            logger.info("Downloading {0}".format(path))
+            logger.info("Downloading %s", path)
             print type(self)
             # urllib.urlretrieve(path, "/tmp/oi.nc")
         except Exception, e:

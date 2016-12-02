@@ -13,6 +13,7 @@ from trollflow.utils import ordered_load
 
 
 def generate_daemon(config_item):
+    """Return a daemon based on the YAML configuration"""
     return config_item['components'][-1]['class']
 
 
@@ -27,6 +28,7 @@ def generate_serial_workflow(config_item):
     wfs = WorkflowStreamer(config=config_item, use_threading=False)
     wfs.start()
     return wfs
+
 
 TYPES = {'daemon': generate_daemon,
          'workflow': generate_thread_workflow,

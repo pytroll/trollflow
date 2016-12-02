@@ -1,8 +1,5 @@
 import yaml
 import logging
-import Queue
-from threading import Thread
-import time
 
 from trollflow import workflow_runner
 from trollflow import utils
@@ -37,8 +34,9 @@ class WorkflowLauncher(object):
 
         for component in components:
             module, slots = component.items()[0]
+            del module
             for slot_name, slot_details in slots.items():
-                if not slot_name in context:
+                if slot_name not in context:
                     slot = {slot_name: {"content": None}}
                     if slot_details:
                         uri = slot_details["uri"]
@@ -60,4 +58,3 @@ class WorkflowLauncher(object):
                 context["global_config"] = global_config
 
         return context
-

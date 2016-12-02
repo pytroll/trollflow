@@ -17,7 +17,7 @@ def main():
 
     filename = sys.argv[1]
 
-    logger.info("Launching workflow {0}".format(filename))
+    logger.info("Launching workflow %s", filename)
     wf_ = WorkflowLauncher(filename)
     wf_.run()
 

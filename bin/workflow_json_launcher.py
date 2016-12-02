@@ -24,7 +24,7 @@ class WorkflowLauncher(object):
         runner.run(self.context)
 
     def read_workflow(self, path_to_workflow):
-        logger.info("Reading workflow {0}".format(path_to_workflow))
+        logger.info("Reading workflow %s", path_to_workflow)
         try:
             with open(path_to_workflow, "r") as fid:
                 config_str = fid.read()
@@ -39,6 +39,7 @@ class WorkflowLauncher(object):
         components = config["Workflow"]
 
         for module, slots in sorted(components.items()):
+            del module
             for slot_name, slot_details in slots.items():
                 if not slot_name in context:
                     slot = {slot_name: {"content": None}}
@@ -64,10 +65,11 @@ class WorkflowLauncher(object):
 
         return context
 
+
 def main():
     filename = sys.argv[1]
 
-    logger.info("Launching workflow {0}".format(filename))
+    logger.info("Launching workflow %s", filename)
     wf_ = WorkflowLauncher(filename)
     wf_.run()
 
