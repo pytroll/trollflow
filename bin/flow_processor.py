@@ -9,24 +9,42 @@ import sys
 import time
 
 from trollflow.workflow_streamer import WorkflowStreamer
+from trollflow.utils import ordered_load
+
 
 def generate_daemon(config_item):
     return config_item['components'][-1]['class']
 
-def generate_workflow(config_item):
-    wfs = WorkflowStreamer(config=config_item)
+
+def generate_thread_workflow(config_item):
+    wfs = WorkflowStreamer(config=config_item, use_threading=True)
+    wfs.start()
+    return wfs
+
+
+def generate_serial_workflow(config_item):
+    """Create a new serial (un-threaded) workflow item based on the config"""
+    wfs = WorkflowStreamer(config=config_item, use_threading=False)
     wfs.start()
     return wfs
 
 TYPES = {'daemon': generate_daemon,
-         'workflow': generate_workflow}
+         'workflow': generate_thread_workflow,
+         'thread_workflow': generate_thread_workflow,
+         'serial_workflow': generate_serial_workflow}
 
-def main():
-    """Main()"""
 
+def read_yaml_config(fname):
+    """Read YAML config file"""
     # Read config
     with open(sys.argv[1], "r") as fid:
-        config = yaml.load(fid)
+        config = ordered_load(fid)
+
+    return config
+
+
+def setup_logging(config):
+    """Setup logging"""
 
     # Check if log config is available, use it if it is
     for item in config["config"]:
@@ -34,8 +52,9 @@ def main():
             logging.config.fileConfig(item["log_config"],
                                       disable_existing_loggers=False)
 
-    logger = logging.getLogger("flow_processor")
-    logger.info("Initializing flow processor")
+
+def create_workers(config):
+    """Create workers"""
 
     workers = []
 
@@ -51,8 +70,12 @@ def main():
         except AttributeError:
             queue = worker.queue
 
-    logger.info("Ready to process new messages")
+    return workers
 
+
+def run(workers, logger):
+    """Run workers until keyboard interrupt is decected, after which join
+    the queues and stop the worker instances."""
     while True:
         try:
             time.sleep(5)
@@ -69,6 +92,22 @@ def main():
                 except AttributeError:
                     pass
             break
+
+
+def main():
+    """Main()"""
+
+    config = read_yaml_config(sys.argv[1])
+
+    setup_logging(config)
+    logger = logging.getLogger("flow_processor")
+    logger.info("Initializing flow processor")
+
+    workers = create_workers(config)
+
+    logger.info("Ready to process new data")
+
+    run(workers, logger)
 
     logger.info("Flow processor has been shutdown.")
 
