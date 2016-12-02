@@ -4,7 +4,6 @@
 
 import logging
 import logging.config
-import yaml
 import sys
 import time
 
@@ -39,7 +38,7 @@ TYPES = {'daemon': generate_daemon,
 def read_yaml_config(fname):
     """Read YAML config file"""
     # Read config
-    with open(sys.argv[1], "r") as fid:
+    with open(fname, "r") as fid:
         config = ordered_load(fid)
 
     return config
