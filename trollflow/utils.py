@@ -1,7 +1,6 @@
 import importlib
 import logging
 import yaml
-from yaml.constructor import ConstructorError
 from collections import OrderedDict
 
 logger = logging.getLogger(__name__)
