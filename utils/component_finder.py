@@ -2,7 +2,7 @@ import glob2
 import ast
 import logging
 import os
-from sys import argv
+import sys
 
 logger = logging.getLogger(__name__)
 
@@ -37,31 +37,14 @@ class ComponentFinder(object):
 
         return components
 
-if __name__ == '__main__':
-    script, pathname = argv
+
+def main():
+    """Main()"""
+    pathname = sys.argv[0]
 
     logger.info("Findging components in %s", pathname)
     finder = ComponentFinder(pathname)
     finder.run()
 
-
-# j =ast.parse("""class OI(object):
-#     pass""")
-#   16: j
-#   17: j.body
-#   18: i = j.body
-#   19: ast.ClassDef
-#   20: j
-#   21: dump(j)
-#   22: ast.dump(j)
-#   23: classes = [node.name for node in ast.walk(j) if isinstance(node, ast.ClassDef)]
-#   24: classes
-#   25: classes = [node for node in ast.walk(j) if isinstance(node, ast.ClassDef)]
-#   26: classes
-#   27: classes = [node.bases for node in ast.walk(j) if isinstance(node, ast.ClassDef)]
-#   28: classes
-#   29: classes = [node.name for node in ast.walk(j) if isinstance(node, ast.ClassDef) and node.bases.Name]
-#   30: classes = [node.name for node in ast.walk(j) if isinstance(node, ast.ClassDef) and node.bases.Name[0].id == "OI"]
-#   31: dump(j)
-#   32: ast.dump(j)
-#   33: %history -g
+if __name__ == '__main__':
+    main()
