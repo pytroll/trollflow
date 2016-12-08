@@ -46,7 +46,7 @@ def setup_logging(config):
                                       disable_existing_loggers=False)
 
 
-def create_workers(config):
+def create_threaded_workers(config):
     """Create workers"""
 
     workers = []
@@ -107,7 +107,7 @@ def main():
     logger = logging.getLogger("flow_processor")
     logger.info("Initializing flow processor")
 
-    workers = create_workers(config)
+    workers = create_threaded_workers(config)
 
     logger.info("Ready to process new data")
 
