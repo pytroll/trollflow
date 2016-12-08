@@ -14,7 +14,7 @@ class WorkflowStreamer(Thread):
 
     """Class for handling streamed workflows"""
 
-    def __init__(self, path_to_workflow=None, config=None, use_threading=True):
+    def __init__(self, path_to_workflow=None, config=None):
 
         Thread.__init__(self)
         if path_to_workflow is not None:
@@ -25,7 +25,6 @@ class WorkflowStreamer(Thread):
         self.input_queue = None
         self.output_queue = Queue.Queue()
         self._loop = True
-        self._use_threading = use_threading
 
     def stop(self):
         """Stop the workflow streamer."""
@@ -45,13 +44,7 @@ class WorkflowStreamer(Thread):
             context = self.build_context(self.workflow)
             context['content'] = data
             runner = workflow_runner.WorkflowRunner(self.workflow)
-
-            if self._use_threading:
-                thr = Thread(target=runner.run, args=[context])
-                thr.start()
-                thr.join()
-            else:
-                runner.run(context)
+            runner.run(context)
 
     def read_workflow(self, path_to_workflow):
         """Read the workflow from YAML configuration file"""
