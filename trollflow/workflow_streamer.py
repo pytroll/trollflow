@@ -39,6 +39,7 @@ class WorkflowStreamer(Thread):
                 continue
             try:
                 data = self.input_queue.get(True, 1)
+                self.input_queue.task_done()
             except Queue.Empty:
                 continue
             context = self.build_context(self.workflow)
