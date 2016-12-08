@@ -17,22 +17,14 @@ def generate_daemon(config_item):
 
 
 def generate_thread_workflow(config_item):
-    wfs = WorkflowStreamer(config=config_item, use_threading=True)
-    wfs.start()
-    return wfs
-
-
-def generate_serial_workflow(config_item):
-    """Create a new serial (un-threaded) workflow item based on the config"""
-    wfs = WorkflowStreamer(config=config_item, use_threading=False)
+    wfs = WorkflowStreamer(config=config_item)
     wfs.start()
     return wfs
 
 
 TYPES = {'daemon': generate_daemon,
          'workflow': generate_thread_workflow,
-         'thread_workflow': generate_thread_workflow,
-         'serial_workflow': generate_serial_workflow}
+         'thread_workflow': generate_thread_workflow, }
 
 
 def read_yaml_config(fname):
@@ -74,8 +66,8 @@ def create_workers(config):
     return workers
 
 
-def run(workers, logger):
-    """Run workers until keyboard interrupt is decected, after which join
+def wait(workers, logger):
+    """Loop workers until keyboard interrupt is detected, after which join
     the queues and stop the worker instances."""
     while True:
         try:
@@ -119,7 +111,7 @@ def main():
 
     logger.info("Ready to process new data")
 
-    run(workers, logger)
+    wait(workers, logger)
 
     logger.info("Flow processor has been shutdown.")
 
