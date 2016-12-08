@@ -85,13 +85,24 @@ def run(workers, logger):
             for worker in workers:
                 worker.stop()
                 try:
+                    # Make sure that all items have been cleared
+                    while worker.input_queue.unfinished_tasks > 0:
+                        logger.debug("%d unfinished task in input queue",
+                                     worker.output_queue.unfinished_tasks)
+                        worker.input_queue.task_done()
                     worker.input_queue.join()
                 except AttributeError:
                     pass
                 try:
+                    # Make sure that all items have been cleared
+                    while worker.output_queue.unfinished_tasks > 0:
+                        logger.debug("%d unfinished task in output queue",
+                                     worker.output_queue.unfinished_tasks)
+                        worker.output_queue.task_done()
                     worker.output_queue.join()
                 except AttributeError:
                     pass
+
             break
 
 
