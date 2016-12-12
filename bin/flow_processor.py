@@ -6,9 +6,10 @@ import logging
 import logging.config
 import sys
 import time
+from Queue import Queue
 
 from trollflow.workflow_streamer import WorkflowStreamer
-from trollflow.utils import ordered_load
+from trollflow.utils import ordered_load, stop_worker, get_data_from_worker
 
 
 def generate_daemon(config_item):
@@ -40,10 +41,9 @@ def setup_logging(config):
     """Setup logging"""
 
     # Check if log config is available, use it if it is
-    for item in config["config"]:
-        if "log_config" in item.keys():
-            logging.config.fileConfig(item["log_config"],
-                                      disable_existing_loggers=False)
+    if "log_config" in config["config"]:
+        logging.config.fileConfig(config["config"]["log_config"],
+                                  disable_existing_loggers=False)
 
 
 def create_threaded_workers(config):
@@ -66,7 +66,7 @@ def create_threaded_workers(config):
     return workers
 
 
-def wait(workers, logger):
+def wait_threads(workers, logger):
     """Loop workers until keyboard interrupt is detected, after which join
     the queues and stop the worker instances."""
     while True:
@@ -75,27 +75,56 @@ def wait(workers, logger):
         except KeyboardInterrupt:
             logger.info("Closing flow processing items")
             for worker in workers:
-                worker.stop()
-                try:
-                    # Make sure that all items have been cleared
-                    while worker.input_queue.unfinished_tasks > 0:
-                        logger.debug("%d unfinished task in input queue",
-                                     worker.output_queue.unfinished_tasks)
-                        worker.input_queue.task_done()
-                    worker.input_queue.join()
-                except AttributeError:
-                    pass
-                try:
-                    # Make sure that all items have been cleared
-                    while worker.output_queue.unfinished_tasks > 0:
-                        logger.debug("%d unfinished task in output queue",
-                                     worker.output_queue.unfinished_tasks)
-                        worker.output_queue.task_done()
-                    worker.output_queue.join()
-                except AttributeError:
-                    pass
-
+                stop_worker(worker)
             break
+
+
+def run_serial_flow(config, logger):
+    """Run processing in serial.  Daemons are still in their own threads,
+    but workflow items are run in sequence."""
+
+    logger.info("Creating daemons and collecting workflow items")
+
+    workers = []
+
+    # Create daemons and collect workers
+    for item in config['work']:
+        if item["type"] == 'daemon':
+            workers.append({"daemon": TYPES['daemon'](item)})
+        else:
+            workers.append({'workflow': item})
+
+    data = None
+    while True:
+        try:
+            for item in workers:
+                # Create a workflow object.  Daemons are already
+                # running, so those can be skipped here
+                if "workflow" in item:
+                    worker = generate_thread_workflow(item["workflow"])
+                else:
+                    worker = item["daemon"]
+
+                # If there's no data, try to get some
+                if data is None:
+                    data = get_data_from_worker(worker)
+                    # Stop workflow object
+                    if "workflow" in item:
+                        stop_worker(worker)
+                    # Continue to the next worker and feed the new data to it
+                    continue
+                if worker.input_queue is None:
+                    worker.input_queue = Queue()
+                worker.input_queue.put(data)
+                data = get_data_from_worker(worker)
+                if "workflow" in item:
+                    stop_worker(worker)
+
+        except KeyboardInterrupt:
+            for worker in workers:
+                if "daemon" in worker:
+                    stop_worker(worker["daemon"])
+            return
 
 
 def main():
@@ -107,11 +136,16 @@ def main():
     logger = logging.getLogger("flow_processor")
     logger.info("Initializing flow processor")
 
-    workers = create_threaded_workers(config)
+    use_threads = config["config"].get('use_threading', True)
 
-    logger.info("Ready to process new data")
-
-    wait(workers, logger)
+    if use_threads:
+        logger.debug("Using threaded processing")
+        workers = create_threaded_workers(config)
+        logger.info("Ready to process new data")
+        wait_threads(workers, logger)
+    else:
+        logger.debug("Using serial processing.")
+        run_serial_flow(config, logger)
 
     logger.info("Flow processor has been shutdown.")
 
