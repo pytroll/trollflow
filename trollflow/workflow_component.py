@@ -7,11 +7,19 @@ class AbstractWorkflowComponent(object):
     # @abc.abstractproperty
     slots = []
 
-    # logger = logging.getLogger("WorkflowBase")
-    # format = '[%(levelname)s: %(asctime)s: %(name)s] %(message)s'
-    # logging.basicConfig(level=logging.DEBUG,
-    #                     format=format,
-    #                     datefmt='%Y-%m-%d %H:%M:%S')
+    def __init__(self):
+        self.prev_lock = None
+        self.lock = None
+
+    def release_lock(self):
+        """Release the lock of the previous step."""
+        if self.prev_lock is not None:
+            self.prev_lock.release()
+
+    def aqcuire_lock(self):
+        """Acquire lock and wait for its release"""
+        if self.own_lock is not None:
+            self.own_lock.acquire(block=True)
 
     @abc.abstractmethod
     def pre_invoke(self):
