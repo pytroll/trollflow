@@ -1,4 +1,5 @@
 import abc
+from threading import Lock
 
 
 class AbstractWorkflowComponent(object):
@@ -8,8 +9,9 @@ class AbstractWorkflowComponent(object):
     slots = []
 
     def __init__(self):
+        self.use_lock = False
         self.prev_lock = None
-        self.lock = None
+        self.lock = Lock()
 
     def release_lock(self):
         """Release the lock of the previous step."""

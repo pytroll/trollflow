@@ -6,10 +6,9 @@ import logging
 import logging.config
 import sys
 import time
-from Queue import Queue
 
 from trollflow.workflow_streamer import WorkflowStreamer
-from trollflow.utils import ordered_load, stop_worker, get_data_from_worker
+from trollflow.utils import ordered_load, stop_worker
 
 
 def generate_daemon(config_item):
@@ -25,7 +24,7 @@ def generate_thread_workflow(config_item):
 
 TYPES = {'daemon': generate_daemon,
          'workflow': generate_thread_workflow,
-         'thread_workflow': generate_thread_workflow, }
+         }
 
 
 def read_yaml_config(fname):
@@ -55,13 +54,17 @@ def create_threaded_workers(config):
         workers.append(TYPES[item['type']](item))
 
     queue = None
+    lock = None
     for worker in workers:
         if queue is not None:
             worker.input_queue = queue
+        if lock is not None:
+            worker.prev_lock = lock
         try:
             queue = worker.output_queue
         except AttributeError:
             queue = worker.queue
+        lock = worker.lock
 
     return workers
 
@@ -79,54 +82,6 @@ def wait_threads(workers, logger):
             break
 
 
-def run_serial_flow(config, logger):
-    """Run processing in serial.  Daemons are still in their own threads,
-    but workflow items are run in sequence."""
-
-    logger.info("Creating daemons and collecting workflow items")
-
-    workers = []
-
-    # Create daemons and collect workers
-    for item in config['work']:
-        if item["type"] == 'daemon':
-            workers.append({"daemon": TYPES['daemon'](item)})
-        else:
-            workers.append({'workflow': item})
-
-    data = None
-    while True:
-        try:
-            for item in workers:
-                # Create a workflow object.  Daemons are already
-                # running, so those can be skipped here
-                if "workflow" in item:
-                    worker = generate_thread_workflow(item["workflow"])
-                else:
-                    worker = item["daemon"]
-
-                # If there's no data, try to get some
-                if data is None:
-                    data = get_data_from_worker(worker)
-                    # Stop workflow object
-                    if "workflow" in item:
-                        stop_worker(worker)
-                    # Continue to the next worker and feed the new data to it
-                    continue
-                if worker.input_queue is None:
-                    worker.input_queue = Queue()
-                worker.input_queue.put(data)
-                data = get_data_from_worker(worker)
-                if "workflow" in item:
-                    stop_worker(worker)
-
-        except KeyboardInterrupt:
-            for worker in workers:
-                if "daemon" in worker:
-                    stop_worker(worker["daemon"])
-            return
-
-
 def main():
     """Main()"""
 
@@ -136,16 +91,9 @@ def main():
     logger = logging.getLogger("flow_processor")
     logger.info("Initializing flow processor")
 
-    use_threads = config["config"].get('use_threading', True)
-
-    if use_threads:
-        logger.debug("Using threaded processing")
-        workers = create_threaded_workers(config)
-        logger.info("Ready to process new data")
-        wait_threads(workers, logger)
-    else:
-        logger.debug("Using serial processing.")
-        run_serial_flow(config, logger)
+    workers = create_threaded_workers(config)
+    logger.info("Ready to process new data")
+    wait_threads(workers, logger)
 
     logger.info("Flow processor has been shutdown.")
 
