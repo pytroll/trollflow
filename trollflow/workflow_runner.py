@@ -8,9 +8,9 @@ logger = logging.getLogger(__name__)
 class WorkflowRunner(object):
 
     def __init__(self, workflow):
-        self.components = [component.keys()[0] for component in \
+        self.components = [component.keys()[0] for component in
                            workflow["Workflow"]]
-        self.workflow = dict((component.items()[0] for component in \
+        self.workflow = dict((component.items()[0] for component in
                               workflow["Workflow"]))
 
     def get_class(self, clazz_path):
@@ -26,13 +26,6 @@ class WorkflowRunner(object):
             component_clazz.invoke(context)
             component_clazz.post_invoke()
 
+
 class WorkflowException(Exception):
     pass
-    # def __init__(self, msg, error):
-    #     self.msg = msg
-    #     self.error = error
-
-    # def __str__(self):
-    #     return repr("WorkflowException: {0} \nOriginal error: {1]".format(
-    #         self.msg,
-    #         self.error))
