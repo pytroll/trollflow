@@ -21,10 +21,10 @@ class AbstractWorkflowComponent(object):
             except ThreadError:
                 pass
 
-    def aqcuire_lock(self):
+    def acquire_lock(self):
         """Acquire lock and wait for its release"""
-        if self.own_lock is not None:
-            self.own_lock.acquire(block=True)
+        if self.lock is not None:
+            self.lock.acquire(True)
 
     @abc.abstractmethod
     def pre_invoke(self):
