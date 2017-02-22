@@ -74,7 +74,7 @@ class WorkflowStreamer(Thread):
             del module
             for slot_name, slot_details in slots.items():
                 if slot_name not in context:
-                    slot = {slot_name: {"content": slot_details}}
+                    slot = {slot_name: slot_details}
                     context.update(slot)
 
         # add global configuration here
