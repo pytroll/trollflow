@@ -39,7 +39,7 @@ def stop_worker(worker):
     try:
         # Make sure that all items have been cleared
         while worker.input_queue.unfinished_tasks > 0:
-            logger.debug("%d unfinished task in input queue",
+            logger.debug("%d unfinished task(s) in input queue",
                          worker.output_queue.unfinished_tasks)
             worker.input_queue.task_done()
             worker.input_queue.join()
@@ -48,7 +48,7 @@ def stop_worker(worker):
     try:
         # Make sure that all items have been cleared
         while worker.output_queue.unfinished_tasks > 0:
-            logger.debug("%d unfinished task in output queue",
+            logger.debug("%d unfinished task(s) in output queue",
                          worker.output_queue.unfinished_tasks)
             worker.output_queue.task_done()
             worker.output_queue.join()
