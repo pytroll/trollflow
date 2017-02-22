@@ -64,7 +64,10 @@ def create_threaded_workers(config):
             queue = worker.output_queue
         except AttributeError:
             queue = worker.queue
-        lock = worker.lock
+        try:
+            lock = worker.lock
+        except AttributeError:
+            lock = None
 
     return workers
 
