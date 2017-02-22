@@ -26,6 +26,9 @@ class WorkflowStreamer(Thread):
         self.output_queue = Queue.Queue()
         self._loop = True
 
+        self.prev_lock = None
+        self.lock = None
+
     def stop(self):
         """Stop the workflow streamer."""
         self._loop = False
@@ -61,7 +64,9 @@ class WorkflowStreamer(Thread):
         logger.info("Constructing context.")
 
         context = {"input_queue": self.input_queue,
-                   "output_queue": self.output_queue}
+                   "output_queue": self.output_queue,
+                   "lock": self.lock,
+                   "prev_lock": self.prev_lock}
         components = config["Workflow"]
 
         for component in components:

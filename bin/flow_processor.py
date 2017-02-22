@@ -6,6 +6,7 @@ import logging
 import logging.config
 import sys
 import time
+from threading import Lock
 
 from trollflow.workflow_streamer import WorkflowStreamer
 from trollflow.utils import ordered_load, stop_worker
@@ -49,25 +50,29 @@ def create_threaded_workers(config):
     """Create workers"""
 
     workers = []
-
     for item in config['work']:
         workers.append(TYPES[item['type']](item))
 
     queue = None
-    lock = None
+    prev_lock = None
     for worker in workers:
         if queue is not None:
             worker.input_queue = queue
-        if lock is not None:
-            worker.prev_lock = lock
         try:
             queue = worker.output_queue
         except AttributeError:
             queue = worker.queue
+
         try:
-            lock = worker.lock
+            worker.prev_lock = prev_lock
         except AttributeError:
-            lock = None
+            pass
+        lock = Lock()
+        try:
+            worker.lock = lock
+        except AttributeError:
+            pass
+        prev_lock = lock
 
     return workers
 
