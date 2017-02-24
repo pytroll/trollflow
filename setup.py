@@ -53,6 +53,6 @@ setup(name="trollflow",
       data_files=[],
       zip_safe=False,
       install_requires=['pyyaml', ],
-      tests_require=['mock'],
+      tests_require=['mock', 'pyyaml'],
       test_suite='trollflow.tests.suite',
       )
