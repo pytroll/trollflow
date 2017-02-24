@@ -1,7 +1,6 @@
 import importlib
 import logging
 from collections import OrderedDict
-import Queue
 import yaml
 from threading import ThreadError
 
