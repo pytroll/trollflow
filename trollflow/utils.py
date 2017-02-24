@@ -3,6 +3,7 @@ import logging
 from collections import OrderedDict
 import Queue
 import yaml
+from threading import ThreadError
 
 logger = logging.getLogger(__name__)
 
@@ -58,3 +59,21 @@ def get_data_from_worker(worker):
             return data
         except Queue.Empty:
             continue
+
+
+def release_lock(lock):
+    """Release the lock of the previous step."""
+    if lock is not None:
+        try:
+            while lock._RLock__count > 0:
+                lock.release()
+            logger.debug("Released lock %s", str(lock))
+        except (ThreadError, RuntimeError):
+            pass
+
+
+def acquire_lock(lock):
+    """Acquire lock and wait for its release"""
+    if lock is not None:
+        lock.acquire(True)
+        logger.debug("Acquired lock %s", str(lock))
