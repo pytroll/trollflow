@@ -14,13 +14,12 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-"""Unit testing for global mosaic
+"""Unit testing for utils
 """
 
 import unittest
 import StringIO
 from threading import RLock
-from mock import patch
 
 from trollflow import utils
 
