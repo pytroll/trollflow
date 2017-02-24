@@ -25,7 +25,7 @@
 
 import unittest
 # import doctest
-from trollflow.tests import (test_utils, )
+from trollflow.tests import (test_utils, test_workflow_component, )
 
 
 def suite():
@@ -36,5 +36,6 @@ def suite():
     # mysuite.addTests(doctest.DocTestSuite(image))
     # Use the unittests also
     mysuite.addTests(test_utils.suite())
+    mysuite.addTests(test_workflow_component.suite())
 
     return mysuite
