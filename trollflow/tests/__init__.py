@@ -25,7 +25,8 @@
 
 import unittest
 # import doctest
-from trollflow.tests import (test_utils, test_workflow_component, )
+from trollflow.tests import (test_utils, test_workflow_component,
+                             test_workflow_streamer)
 
 
 def suite():
@@ -37,5 +38,6 @@ def suite():
     # Use the unittests also
     mysuite.addTests(test_utils.suite())
     mysuite.addTests(test_workflow_component.suite())
+    mysuite.addTests(test_workflow_streamer.suite())
 
     return mysuite
