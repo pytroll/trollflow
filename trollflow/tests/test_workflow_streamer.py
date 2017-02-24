@@ -32,7 +32,6 @@ class Foo(object):
 
 class TestWorkflowStreamer(unittest.TestCase):
 
-    streamer = None
     config_str = """
     Workflow:
       - trollflow.tests.test_workflow_streamer.Foo:
@@ -44,21 +43,22 @@ class TestWorkflowStreamer(unittest.TestCase):
     fid.close()
 
     @patch("trollflow.workflow_streamer.workflow_runner")
-    def test_init(self, runner):
+    def setUp(self, runner):
+        self.runner = runner
         self.streamer = WorkflowStreamer(config=self.config)
+
+    def test_init(self):
         self.assertIsNotNone(self.streamer.workflow)
         self.assertIsNone(self.streamer.input_queue)
         self.assertTrue(hasattr(self.streamer.output_queue, 'get'))
         self.assertIsNone(self.streamer.prev_lock)
         self.assertIsNone(self.streamer.lock)
 
-    # def test_stop(self):
-    #    self.streamer = WorkflowStreamer(config=self.config)
-    #    self.streamer.start()
-    #    self.streamer.stop()
+    def test_stop(self):
+        self.streamer.stop()
+        self.assertFalse(self.streamer._loop)
 
     # def test_run(self):
-    #    self.streamer = WorkflowStreamer(config=self.config)
     #    self.streamer.input_queue = Queue.Queue()
     #    self.streamer.start()
 
