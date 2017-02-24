@@ -6,7 +6,7 @@ import logging
 import logging.config
 import sys
 import time
-from threading import Lock
+from threading import RLock
 
 from trollflow.workflow_streamer import WorkflowStreamer
 from trollflow.utils import ordered_load, stop_worker
@@ -67,7 +67,7 @@ def create_threaded_workers(config):
             worker.prev_lock = prev_lock
         except AttributeError:
             pass
-        lock = Lock()
+        lock = RLock()
         try:
             worker.lock = lock
         except AttributeError:

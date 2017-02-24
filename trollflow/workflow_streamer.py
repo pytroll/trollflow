@@ -29,6 +29,8 @@ class WorkflowStreamer(Thread):
         self.prev_lock = None
         self.lock = None
 
+        self.runner = workflow_runner.WorkflowRunner(self.workflow)
+
     def stop(self):
         """Stop the workflow streamer."""
         self._loop = False
@@ -46,8 +48,7 @@ class WorkflowStreamer(Thread):
                 continue
             context = self.build_context(self.workflow)
             context['content'] = data
-            runner = workflow_runner.WorkflowRunner(self.workflow)
-            runner.run(context)
+            self.runner.run(context)
 
     def read_workflow(self, path_to_workflow):
         """Read the workflow from YAML configuration file"""
