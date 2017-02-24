@@ -21,23 +21,46 @@ import unittest
 from mock import patch
 import StringIO
 
-from trollflow.workflow_streamer import WorkflowStreamer
+from trollflow.workflow_streamer import WorkflowStreamer, utils
+
+
+class Foo(object):
+
+    def __init__(self):
+        pass
 
 
 class TestWorkflowStreamer(unittest.TestCase):
 
     streamer = None
-    config_str = """"""
-    config = StringIO.StringIO(config_str)
+    config_str = """
+    Workflow:
+      - trollflow.tests.test_workflow_streamer.Foo:
+        arg1: 1
+        arg2: 2
+    """
+    fid = StringIO.StringIO(config_str)
+    config = utils.ordered_load(fid)
+    fid.close()
 
     @patch("trollflow.workflow_streamer.workflow_runner")
     def test_init(self, runner):
         self.streamer = WorkflowStreamer(config=self.config)
         self.assertIsNotNone(self.streamer.workflow)
-        self.assertIsNone(self.input_queue)
-        self.assertTrue(hasattr(self.output_queue, 'get'))
-        self.assertIsNone(self.prev_lock)
-        self.assertIsNone(self.lock)
+        self.assertIsNone(self.streamer.input_queue)
+        self.assertTrue(hasattr(self.streamer.output_queue, 'get'))
+        self.assertIsNone(self.streamer.prev_lock)
+        self.assertIsNone(self.streamer.lock)
+
+    # def test_stop(self):
+    #    self.streamer = WorkflowStreamer(config=self.config)
+    #    self.streamer.start()
+    #    self.streamer.stop()
+
+    # def test_run(self):
+    #    self.streamer = WorkflowStreamer(config=self.config)
+    #    self.streamer.input_queue = Queue.Queue()
+    #    self.streamer.start()
 
 
 def suite():
