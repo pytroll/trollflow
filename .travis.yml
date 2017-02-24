@@ -6,6 +6,7 @@ python:
   - '3.4'
   - '3.5'
   - '3.6'
+install:
   - pip install .
   - pip install mock
   - pip install coveralls
