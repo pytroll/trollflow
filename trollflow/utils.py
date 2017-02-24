@@ -48,19 +48,6 @@ def stop_worker(worker):
         pass
 
 
-def get_data_from_worker(worker):
-    """Read data from the output queue of the given worker."""
-    if worker.output_queue is None:
-        return None
-    while True:
-        try:
-            data = worker.output_queue.get(True, 1)
-            worker.output_queue.task_done()
-            return data
-        except Queue.Empty:
-            continue
-
-
 def release_lock(lock):
     """Release the lock of the previous step."""
     if lock is not None:
