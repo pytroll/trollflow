@@ -1,6 +1,9 @@
 import yaml
 import logging
-import Queue
+try:
+    import Queue as queue
+except ImportError:
+    import queue
 from threading import Thread
 import time
 
@@ -23,7 +26,7 @@ class WorkflowStreamer(Thread):
             self.workflow = config
 
         self.input_queue = None
-        self.output_queue = Queue.Queue()
+        self.output_queue = queue.Queue()
         self._loop = True
 
         self.prev_lock = None
@@ -44,7 +47,7 @@ class WorkflowStreamer(Thread):
             try:
                 data = self.input_queue.get(True, 1)
                 self.input_queue.task_done()
-            except Queue.Empty:
+            except queue.Empty:
                 continue
             context = self.build_context(self.workflow)
             context['content'] = data

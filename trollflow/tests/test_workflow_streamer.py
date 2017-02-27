@@ -19,7 +19,10 @@
 
 import unittest
 from mock import patch
-import StringIO
+try:
+    from StringIO import StringIO
+except ImportError:
+    from io import StringIO
 
 from trollflow.workflow_streamer import WorkflowStreamer, utils
 
@@ -38,7 +41,7 @@ class TestWorkflowStreamer(unittest.TestCase):
         arg1: 1
         arg2: 2
     """
-    fid = StringIO.StringIO(config_str)
+    fid = StringIO(config_str)
     config = utils.ordered_load(fid)
     fid.close()
 

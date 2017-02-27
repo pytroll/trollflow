@@ -18,7 +18,10 @@
 """
 
 import unittest
-import StringIO
+try:
+    from StringIO import StringIO
+except ImportError:
+    from io import StringIO
 from threading import RLock
 
 from trollflow import utils
@@ -38,7 +41,7 @@ class TestUtils(unittest.TestCase):
         self.assertTrue(res == utils)
 
     def test_ordered_load(self):
-        fid = StringIO.StringIO(self.yaml_config)
+        fid = StringIO(self.yaml_config)
         res = utils.ordered_load(fid)
         fid.close()
         self.assertTrue(res.keys()[0] == "config")
