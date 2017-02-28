@@ -1,6 +1,115 @@
 Changelog
 =========
 
+v0.3.0 (2017-02-28)
+-------------------
+
+- Update changelog. [Panu Lahtinen]
+
+- Bump version: 0.2.0 → 0.3.0. [Panu Lahtinen]
+
+- Merge branch 'master' into develop. [Panu Lahtinen]
+
+- Merge branch 'release-0.2.0' [Panu Lahtinen]
+
+- Merge branch 'release_0.1.0' [Panu Lahtinen]
+
+- Remove tests dependencies. [Panu Lahtinen]
+
+- Fix test requirement. [Panu Lahtinen]
+
+- Change RLock to Lock, adjust tests. [Panu Lahtinen]
+
+- Make import Python3 compatible. [Panu Lahtinen]
+
+- Fix syntax by adding install group. [Panu Lahtinen]
+
+- Move stremere init to setUp(), test stop() [Panu Lahtinen]
+
+- Fix typos, add placeholders for testin start() and stop() [Panu
+  Lahtinen]
+
+- Add pyyaml to test requirements. [Panu Lahtinen]
+
+- Add test_workflow_streamer, test WorkflowStreamer.__init__ [Panu
+  Lahtinen]
+
+- Add tests for workflow_component. [Panu Lahtinen]
+
+- Remove unused import. [Panu Lahtinen]
+
+- Adjust docstring, remove unused import. [Panu Lahtinen]
+
+- Add tests for trollflow.utils. [Panu Lahtinen]
+
+- Enable tests. [Panu Lahtinen]
+
+- Remove unused function. [Panu Lahtinen]
+
+- Make tests a package. [Panu Lahtinen]
+
+- Add travis config. [Panu Lahtinen]
+
+- Move lock acquire/release from trollflow_sat. [Panu Lahtinen]
+
+- Remove redefinition of items at each run, use Rlock instead of Lock.
+  [Panu Lahtinen]
+
+- Remove unnecesary "content" dictionary. [Panu Lahtinen]
+
+- Move locking from WorkflowComponent to WorkflowStreamer. [Panu
+  Lahtinen]
+
+- Adjust lock messages. [Panu Lahtinen]
+
+- Handle workers without locking. [Panu Lahtinen]
+
+- Fix lock name, fix typo in function name. [Panu Lahtinen]
+
+- Catch ThreadError if releasing unlocked lock. [Panu Lahtinen]
+
+- Create local lock at init time, set use_lock to False by default.
+  [Panu Lahtinen]
+
+- PEP8 and remove obsolete stuff. [Panu Lahtinen]
+
+- Add locks. [Panu Lahtinen]
+
+- Add missing file. [Panu Lahtinen]
+
+- Remove obsolete files. [Panu Lahtinen]
+
+- Add a methods to stop workers and get data from workers. [Panu
+  Lahtinen]
+
+- Add serial processing. [Panu Lahtinen]
+
+- Rename create_workers() to create_threaded_workers() [Panu Lahtinen]
+
+- Remove broken "serial" workflow generator, rename run() to wait()
+  [Panu Lahtinen]
+
+- Remove extra layer of threading. [Panu Lahtinen]
+
+- Make sure all the queued items have been marked as done. [Panu
+  Lahtinen]
+
+- Apply task_done() after data is read from the input queue. [Panu
+  Lahtinen]
+
+- Add main, cleanup, pep8. [Panu Lahtinen]
+
+- Remove unused import, fix config reader to use the argument. [Panu
+  Lahtinen]
+
+- Remove unused import. [Panu Lahtinen]
+
+- Merge branch 'develop' of https://github.com/pytroll/trollflow into
+  develop. [Panu Lahtinen]
+
+- Add ordered load, restructure code, add serial processing. [Panu
+  Lahtinen]
+
 v0.2.0 (2016-11-22)
 -------------------
 
