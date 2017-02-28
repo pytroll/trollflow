@@ -1,6 +1,15 @@
 Changelog
 =========
 
+v0.3.1 (2017-02-28)
+-------------------
+
+- Update changelog. [Panu Lahtinen]
+
+- Bump version: 0.3.0 → 0.3.1. [Panu Lahtinen]
+
+- Make views lists so that also Python 3 should work. [Panu Lahtinen]
+
 v0.3.0 (2017-02-28)
 -------------------
 
