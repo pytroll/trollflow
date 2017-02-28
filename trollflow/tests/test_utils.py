@@ -22,7 +22,7 @@ try:
     from StringIO import StringIO
 except ImportError:
     from io import StringIO
-from threading import RLock
+from threading import Lock
 
 from trollflow import utils
 
@@ -34,7 +34,7 @@ class TestUtils(unittest.TestCase):
     item_2: 2
     """
 
-    lock = RLock()
+    lock = Lock()
 
     def test_get_class(self):
         res = utils.get_class("trollflow.utils")
@@ -52,14 +52,14 @@ class TestUtils(unittest.TestCase):
         self.assertTrue(res["config"][keys[1]] == 2)
 
     def test_acquire_lock(self):
-        self.assertEqual(self.lock._RLock__count, 0)
+        self.assertFalse(self.lock.locked())
         utils.acquire_lock(self.lock)
-        self.assertEqual(self.lock._RLock__count, 1)
+        self.assertTrue(self.lock.locked())
 
     def test_release_lock(self):
-        self.assertEqual(self.lock._RLock__count, 1)
+        self.assertTrue(self.lock.locked())
         utils.release_lock(self.lock)
-        self.assertEqual(self.lock._RLock__count, 0)
+        self.assertFalse(self.lock.locked())
 
 
 def suite():

@@ -51,11 +51,11 @@ def release_lock(lock):
     """Release the lock of the previous step."""
     if lock is not None:
         try:
-            while lock._RLock__count > 0:
-                lock.release()
+            lock.release()
             logger.debug("Released lock %s", str(lock))
+            return True
         except (ThreadError, RuntimeError):
-            pass
+            return False
 
 
 def acquire_lock(lock):
@@ -63,3 +63,5 @@ def acquire_lock(lock):
     if lock is not None:
         lock.acquire(True)
         logger.debug("Acquired lock %s", str(lock))
+        return True
+    return False
