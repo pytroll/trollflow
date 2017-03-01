@@ -81,14 +81,15 @@ def create_threaded_workers(config):
 def wait_threads(workers, logger):
     """Loop workers until keyboard interrupt is detected, after which join
     the queues and stop the worker instances."""
-    while True:
+    loop = True
+    while loop:
         try:
             time.sleep(5)
         finally:
             logger.info("Closing flow processing items")
             for worker in workers:
                 stop_worker(worker)
-            break
+            loop = False
 
 
 def main():
