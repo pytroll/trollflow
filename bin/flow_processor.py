@@ -19,6 +19,7 @@ def generate_daemon(config_item):
 
 def generate_thread_workflow(config_item):
     wfs = WorkflowStreamer(config=config_item)
+    wfs.setDaemon(True)
     wfs.start()
     return wfs
 
