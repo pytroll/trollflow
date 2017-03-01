@@ -85,7 +85,7 @@ def wait_threads(workers, logger):
     while loop:
         try:
             time.sleep(5)
-        except KeyboardInterrupt:
+        except (KeyboardInterrupt, MemoryError):
             logger.info("Closing flow processing items")
             for worker in workers:
                 stop_worker(worker)
