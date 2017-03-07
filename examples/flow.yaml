@@ -3,6 +3,10 @@ config:
         /tmp/bla.xml
     - log_config:
         /tmp/log.ini
+    - use_locks: &use_locks
+        true
+    - use_utc:
+        true
 work:
     - type: daemon
       name: listener

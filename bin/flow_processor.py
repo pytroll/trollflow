@@ -97,6 +97,13 @@ def main():
 
     config = read_yaml_config(sys.argv[1])
 
+    try:
+        if config["config"]["use_utc"]:
+            os.environ["TZ"] = "UTC"
+            time.tzset()
+    except KeyError:
+        pass
+
     setup_logging(config)
     logger = logging.getLogger("flow_processor")
     logger.info("Initializing flow processor")
