@@ -7,6 +7,7 @@ import logging.config
 import sys
 import time
 from threading import Lock
+import os
 
 from trollflow.workflow_streamer import WorkflowStreamer
 from trollflow.utils import ordered_load, stop_worker
