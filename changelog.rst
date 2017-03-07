@@ -1,6 +1,27 @@
 Changelog
 =========
 
+v0.3.2 (2017-03-07)
+-------------------
+
+- Update changelog. [Panu Lahtinen]
+
+- Bump version: 0.3.1 → 0.3.2. [Panu Lahtinen]
+
+- Add missing import. [Panu Lahtinen]
+
+- Use UTC timestamps in log files by default. [Panu Lahtinen]
+
+- Catch MemoryError. [Panu Lahtinen]
+
+- Fix finally/except misuse. [Panu Lahtinen]
+
+- Make loop exit cleaner. [Panu Lahtinen]
+
+- Catch all errors, not only KeyboardInterrupt. [Panu Lahtinen]
+
+- Daemonize all worker threads. [Panu Lahtinen]
+
 v0.3.1 (2017-02-28)
 -------------------
 
