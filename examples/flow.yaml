@@ -7,6 +7,10 @@ config:
         true
     - use_utc:
         true
+    # Garbage collection can be forced after each workflow item to force
+    # memory to be released. If not set, defaults to False
+    - force_gc:
+        false
 work:
     - type: daemon
       name: listener

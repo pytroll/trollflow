@@ -18,8 +18,8 @@ def generate_daemon(config_item):
     return config_item['components'][-1]['class']
 
 
-def generate_thread_workflow(config_item):
-    wfs = WorkflowStreamer(config=config_item)
+def generate_thread_workflow(config_item, force_gc=False):
+    wfs = WorkflowStreamer(config=config_item, force_gc=force_gc)
     wfs.setDaemon(True)
     wfs.start()
     return wfs
@@ -52,8 +52,17 @@ def create_threaded_workers(config):
     """Create workers"""
 
     workers = []
+    try:
+        force_gc = config["config"]["force_gc"]
+        logging.info("Using forced garbage collection")
+    except KeyError:
+        force_gc = False
+
     for item in config['work']:
-        workers.append(TYPES[item['type']](item))
+        if item['type'] == 'workflow':
+            workers.append(TYPES[item['type']](item, force_gc=force_gc))
+        else:
+            workers.append(TYPES[item['type']](item))
 
     queue = None
     prev_lock = None

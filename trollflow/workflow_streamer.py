@@ -6,6 +6,7 @@ except ImportError:
     import queue
 from threading import Thread
 import time
+import gc
 
 from trollflow import workflow_runner
 from trollflow import utils
@@ -17,13 +18,15 @@ class WorkflowStreamer(Thread):
 
     """Class for handling streamed workflows"""
 
-    def __init__(self, path_to_workflow=None, config=None):
+    def __init__(self, path_to_workflow=None, config=None, force_gc=False):
 
         Thread.__init__(self)
         if path_to_workflow is not None:
             self.workflow = self.read_workflow(path_to_workflow)
         else:
             self.workflow = config
+
+        self.force_gc = force_gc
 
         self.input_queue = None
         self.output_queue = queue.Queue()
@@ -52,6 +55,10 @@ class WorkflowStreamer(Thread):
             context = self.build_context(self.workflow)
             context['content'] = data
             self.runner.run(context)
+
+            if self.force_gc:
+                num = gc.collect()
+                logger.debug("Garbage collection cleaned %s objects", num)
 
     def read_workflow(self, path_to_workflow):
         """Read the workflow from YAML configuration file"""
