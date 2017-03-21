@@ -1,6 +1,15 @@
 Changelog
 =========
 
+v0.4.0 (2017-03-21)
+-------------------
+
+- Update changelog. [Panu Lahtinen]
+
+- Bump version: 0.3.2 → 0.4.0. [Panu Lahtinen]
+
+- Add optional forced garbage collection. [Panu Lahtinen]
+
 v0.3.2 (2017-03-07)
 -------------------
 
