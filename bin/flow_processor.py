@@ -10,7 +10,7 @@ from threading import Lock
 import os
 
 from trollflow.workflow_streamer import WorkflowStreamer
-from trollflow.utils import ordered_load, stop_worker
+from trollflow.utils import ordered_load, stop_worker, release_lock
 
 
 def generate_daemon(config_item):
@@ -96,26 +96,15 @@ def create_threaded_workers(config):
 def find_dead_threads(workers, logger, config):
     """Check that all threads are alive, and try to reboot them if they've
     died."""
-    prev_dead = False
 
     for i, worker in enumerate(workers):
-        # If queue has been set, it means that the previous step has failed
-        if prev_dead:
-            # Link output queue of the previous item to input of the current
-            worker.input_queue = workers[i - 1].output_queue
-            # Same for locks
-            worker.prev_lock = workers[i - 1].lock
-            # Release workers own lock
-            prev_dead = False
-
         # Check if the worker is dead
         try:
             if not worker.is_alive():
-                prev_dead = True
                 workers[i] = restart_dead_worker(logger, config, worker, i)
                 logger.info("Restart completed")
                 try:
-                    worker.prev_lock.release()
+                    release_lock(worker.prev_lock)
                 except AttributeError:
                     pass
 
@@ -131,9 +120,11 @@ def restart_dead_worker(logger, config, worker, num):
     except KeyError:
         force_gc = False
 
-    # Get existing linked queue and lock to safety
-    queue = worker.input_queue
-    lock = worker.prev_lock
+    # Get existing linked queues and locks to safety
+    input_queue = worker.input_queue
+    output_queue = worker.output_queue
+    prev_lock = worker.prev_lock
+    lock = worker.lock
 
     # Stop worker
     stop_worker(worker)
@@ -143,12 +134,11 @@ def restart_dead_worker(logger, config, worker, num):
     logger.info("Starting %s", item['name'])
     worker = create_worker(item, force_gc=force_gc)
 
-    # Link old queue and lock back to worker
-    worker.input_queue = queue
-    worker.prev_lock = lock
-
-    # Create new lock, it'll be linked to the next worker
-    worker.lock = Lock()
+    # Link old queues and locks back to worker
+    worker.input_queue = input_queue
+    worker.output_queue = output_queue
+    worker.prev_lock = prev_lock
+    worker.lock = lock
 
     return worker
 
