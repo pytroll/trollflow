@@ -15,6 +15,7 @@ from trollflow.utils import ordered_load, stop_worker, release_lock
 
 def generate_daemon(config_item):
     """Return a daemon based on the YAML configuration"""
+    logging.info("Starting daemon '%s'", config_item['name'])
     return config_item['components'][-1]['class']
 
 
@@ -96,11 +97,16 @@ def create_threaded_workers(config):
 def find_dead_threads(workers, logger, config):
     """Check that all threads are alive, and try to reboot them if they've
     died."""
-
+    prev_died = False
     for i, worker in enumerate(workers):
+        if prev_died:
+            release_lock(worker.prev_lock)
+            prev_died = False
+
         # Check if the worker is dead
         try:
             if not worker.is_alive():
+                prev_died = True
                 workers[i] = restart_dead_worker(logger, config, worker, i)
                 logger.info("Crashed worker restarted")
                 try:
