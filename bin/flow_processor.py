@@ -102,7 +102,7 @@ def find_dead_threads(workers, logger, config):
         try:
             if not worker.is_alive():
                 workers[i] = restart_dead_worker(logger, config, worker, i)
-                logger.info("Restart completed")
+                logger.info("Crashed worker restarted")
                 try:
                     release_lock(worker.prev_lock)
                 except AttributeError:
