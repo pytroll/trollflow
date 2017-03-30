@@ -48,6 +48,14 @@ def setup_logging(config):
                                   disable_existing_loggers=False)
 
 
+def create_worker(item, force_gc=False):
+    """Create a worker"""
+    if item['type'] == 'workflow':
+        return TYPES[item['type']](item, force_gc=force_gc)
+    else:
+        return TYPES[item['type']](item)
+
+
 def create_threaded_workers(config):
     """Create workers"""
 
@@ -59,10 +67,7 @@ def create_threaded_workers(config):
         force_gc = False
 
     for item in config['work']:
-        if item['type'] == 'workflow':
-            workers.append(TYPES[item['type']](item, force_gc=force_gc))
-        else:
-            workers.append(TYPES[item['type']](item))
+        workers.append(create_worker(item, force_gc=force_gc))
 
     queue = None
     prev_lock = None
@@ -88,7 +93,76 @@ def create_threaded_workers(config):
     return workers
 
 
-def wait_threads(workers, logger):
+def find_dead_threads(workers, logger, config):
+    """Check that all threads are alive, and try to reboot them if they've
+    died."""
+    prev_dead = False
+
+    for i, worker in enumerate(workers):
+        # If queue has been set, it means that the previous step has failed
+        if prev_dead:
+            # Link output queue of the previous item to input of the current
+            worker.input_queue = workers[i - 1].output_queue
+            # Same for locks
+            worker.prev_lock = workers[i - 1].lock
+            # Release workers own lock
+            prev_dead = False
+
+        # Check if the worker is dead
+        try:
+            if not worker.is_alive():
+                prev_dead = True
+                workers[i] = restart_dead_worker(logger, config, worker, i)
+                logger.info("Restart completed")
+                try:
+                    worker.prev_lock.release()
+                except AttributeError:
+                    pass
+
+        except AttributeError:
+            pass
+
+
+def restart_dead_worker(logger, config, worker, num):
+    """Try to restart dead threads"""
+    logger.error("Thread has crashed, trying to restart it")
+    try:
+        force_gc = config["config"]["force_gc"]
+    except KeyError:
+        force_gc = False
+
+    # Get existing linked queue and lock to safety
+    queue = worker.input_queue
+    lock = worker.prev_lock
+
+    # Stop worker
+    stop_worker(worker)
+
+    # Create new worker
+    item = find_worker_config_by_idx(config, num)
+    logger.info("Starting %s", item['name'])
+    worker = create_worker(item, force_gc=force_gc)
+
+    # Link old queue and lock back to worker
+    worker.input_queue = queue
+    worker.prev_lock = lock
+
+    # Create new lock, it'll be linked to the next worker
+    worker.lock = Lock()
+
+    return worker
+
+
+def find_worker_config_by_idx(config, num):
+    """Find worker item config from master config by index number"""
+    i = 0
+    for item in config['work']:
+        if i == num:
+            return item
+        i += 1
+
+
+def wait_threads(workers, logger, config):
     """Loop workers until keyboard interrupt is detected, after which join
     the queues and stop the worker instances."""
     loop = True
@@ -100,6 +174,7 @@ def wait_threads(workers, logger):
             for worker in workers:
                 stop_worker(worker)
             loop = False
+        find_dead_threads(workers, logger, config)
 
 
 def main():
@@ -120,7 +195,7 @@ def main():
 
     workers = create_threaded_workers(config)
     logger.info("Ready to process new data")
-    wait_threads(workers, logger)
+    wait_threads(workers, logger, config)
 
     logger.info("Flow processor has been shutdown.")
 
