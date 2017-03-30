@@ -164,7 +164,8 @@ def wait_threads(workers, logger, config):
             for worker in workers:
                 stop_worker(worker)
             loop = False
-        find_dead_threads(workers, logger, config)
+        else:
+            find_dead_threads(workers, logger, config)
 
 
 def main():
