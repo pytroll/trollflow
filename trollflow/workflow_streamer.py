@@ -52,6 +52,8 @@ class WorkflowStreamer(Thread):
                 self.input_queue.task_done()
             except queue.Empty:
                 continue
+            except ValueError:
+                pass
             context = self.build_context(self.workflow)
             context['content'] = data
             self.runner.run(context)
