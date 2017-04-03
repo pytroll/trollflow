@@ -30,20 +30,25 @@ def ordered_load(stream, Loader=yaml.Loader, object_pairs_hook=OrderedDict):
     return yaml.load(stream, OrderedLoader)
 
 
-def stop_worker(worker):
+def stop_worker(worker, flush_queue=True):
     """Stop the given worker and join all the queues"""
     try:
         worker.stop()
     except AttributeError:
         pass
     try:
-        # Make sure that all items have been cleared
-        while worker.input_queue.unfinished_tasks > 0:
-            logger.debug("%d unfinished task(s) in input queue",
-                         worker.output_queue.unfinished_tasks)
-            worker.input_queue.task_done()
+        if flush_queue:
+            if worker.input_queue.qsize() > 0:
+                logger.debug("Flushing %d items from input queue",
+                             worker.input_queue.qsize())
+                # Make sure that all items have been cleared
+                while worker.input_queue.qsize() > 0:
+                    itm = worker.input_queue.get()
+                    worker.input_queue.task_done()
+                    del itm
+            logger.debug("Joining input queue")
             worker.input_queue.join()
-    except AttributeError:
+    except (AttributeError, ValueError):
         pass
 
 
