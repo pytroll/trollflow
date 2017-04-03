@@ -97,48 +97,47 @@ def create_threaded_workers(config):
 def find_dead_threads(workers, logger, config):
     """Check that all threads are alive, and try to reboot them if they've
     died."""
-    prev_died = False
     for i, worker in enumerate(workers):
-        if prev_died:
-            release_lock(worker.prev_lock)
-            prev_died = False
-
         # Check if the worker is dead
         try:
-            if not worker.is_alive():
-                prev_died = True
-                workers[i] = restart_dead_worker(logger, config, worker, i)
-                logger.info("Crashed worker restarted")
-                try:
-                    release_lock(worker.prev_lock)
-                except AttributeError:
-                    pass
-
+            is_alive = worker.is_alive()
         except AttributeError:
-            pass
+            is_alive = True
+
+        if not is_alive:
+            workers[i] = restart_dead_worker(logger, config, worker, i)
+            release_lock(workers[i].prev_lock)
+            release_lock(workers[i].lock)
+            logger.info("Crashed worker restarted")
 
 
 def restart_dead_worker(logger, config, worker, num):
     """Try to restart dead threads"""
     logger.error("Thread has crashed, trying to restart it")
-    try:
-        force_gc = config["config"]["force_gc"]
-    except KeyError:
-        force_gc = False
 
     # Get existing linked queues and locks to safety
     input_queue = worker.input_queue
     output_queue = worker.output_queue
+
     prev_lock = worker.prev_lock
     lock = worker.lock
 
-    # Stop worker
-    stop_worker(worker)
+    try:
+        worker.restart()
+        logger.warning("Crashed daemon restarted")
+    except AttributeError:
+        try:
+            force_gc = config["config"]["force_gc"]
+        except KeyError:
+            force_gc = False
 
-    # Create new worker
-    item = find_worker_config_by_idx(config, num)
-    logger.info("Starting %s", item['name'])
-    worker = create_worker(item, force_gc=force_gc)
+        # Stop worker
+        stop_worker(worker, flush_queue=False)
+
+        # Create new worker
+        item = find_worker_config_by_idx(config, num)
+        logger.info("Starting %s", item['name'])
+        worker = create_worker(item, force_gc=force_gc)
 
     # Link old queues and locks back to worker
     worker.input_queue = input_queue
