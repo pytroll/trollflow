@@ -1,6 +1,44 @@
 Changelog
 =========
 
+v0.5.0 (2017-04-04)
+-------------------
+
+- Update changelog. [Panu Lahtinen]
+
+- Bump version: 0.4.0 → 0.5.0. [Panu Lahtinen]
+
+- Fix restarting crashed workers/daemons. [Panu Lahtinen]
+
+- Catch ValueError. [Panu Lahtinen]
+
+- Add "flush_queue" kwarg. [Panu Lahtinen]
+
+  When setting flush_queue=False, the queued items can be kept when
+  restarting worker
+
+
+- If previous worker died, release its lock. [Panu Lahtinen]
+
+  NOTE: this need to be done so that all the downstream workers have
+  finished working so that there won't be synchronisation issues
+
+
+- Clarify log message. [Panu Lahtinen]
+
+- Remove exception handling for MemoryError. [Panu Lahtinen]
+
+  In this way the thread "watchdog" can restart the worker without losing
+  all the existing items in the queues
+
+
+- Find dead workers only when not shutting down. [Panu Lahtinen]
+
+- Use also old output queues so possibly existing data are kept. [Panu
+  Lahtinen]
+
+- Recreate dead threads, reconnect queues and locks. [Panu Lahtinen]
+
 v0.4.0 (2017-03-21)
 -------------------
 
