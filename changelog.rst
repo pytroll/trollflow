@@ -1,6 +1,15 @@
 Changelog
 =========
 
+v0.5.1 (2017-08-15)
+-------------------
+
+- Update changelog. [Panu Lahtinen]
+
+- Bump version: 0.5.0 → 0.5.1. [Panu Lahtinen]
+
+- Fix PyYAML case as dependency in setup.cfg. [Martin Raspaud]
+
 v0.5.0 (2017-04-04)
 -------------------
 
