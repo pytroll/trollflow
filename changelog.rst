@@ -1,6 +1,19 @@
 Changelog
 =========
 
+v0.5.2 (2017-10-26)
+-------------------
+
+- Update changelog. [Panu Lahtinen]
+
+- Bump version: 0.5.1 → 0.5.2. [Panu Lahtinen]
+
+- Rename to more descriptive filename. [Panu Lahtinen]
+
+- Update example to match current package structures. [Panu Lahtinen]
+
+- Update readme. [Panu Lahtinen]
+
 v0.5.1 (2017-08-15)
 -------------------
 
