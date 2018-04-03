@@ -57,7 +57,8 @@ class WorkflowStreamer(Thread):
             context = self.build_context(self.workflow)
             context['content'] = data
             self.runner.run(context)
-
+            # Clear data and context
+            data, context = None, None
             if self.force_gc:
                 num = gc.collect()
                 logger.debug("Garbage collection cleaned %s objects", num)
