@@ -8,9 +8,9 @@ logger = logging.getLogger(__name__)
 class WorkflowRunner(object):
 
     def __init__(self, workflow):
-        self.components = [component.keys()[0] for component in
+        self.components = [tuple(component.keys())[0] for component in
                            workflow["Workflow"]]
-        self.workflow = dict((component.items()[0] for component in
+        self.workflow = dict((tuple(component.items())[0] for component in
                               workflow["Workflow"]))
         self.classes = []
         for module in self.components:
