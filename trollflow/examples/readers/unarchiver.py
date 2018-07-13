@@ -13,13 +13,13 @@ class Unarchiver(AbstractWorkflowComponent):
     def invoke(self, context):
         """Unarchiver..."""
         try:
-            print context[self.slots[0]]["uri"]
+            print(context[self.slots[0]]["uri"])
             cmd = ["tar", "-xzvf",
                    context[self.slots[0]]["uri"],
                    "-C", context[self.slots[1]]["uri"]]
             subprocess.call(cmd)
-        except Exception, e:
-            raise e
+        except Exception as err:
+            raise err
 
     def post_invoke(self):
         pass

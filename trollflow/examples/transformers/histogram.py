@@ -12,8 +12,8 @@ class Histogramer(AbstractWorkflowComponent):
         try:
             plt.hist(context[self.slots[0]]["content"])
             plt.show()
-        except Exception, e:
-            raise e
+        except Exception as err:
+            raise err
 
     def post_invoke(self):
         pass

@@ -13,8 +13,8 @@ class TXTFileWriter(AbstractWorkflowComponent):
             txt_file = open(context[self.slots[0]]["uri"], 'w')
             txt_file.write(str(context[self.slots[0]]["content"]))
             txt_file.close()
-        except Exception, e:
-            raise e
+        except Exception as err:
+            raise err
 
     def post_invoke(self):
         """Close file."""
