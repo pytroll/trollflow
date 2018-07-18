@@ -18,10 +18,10 @@ class WWWDownloader(AbstractWorkflowComponent):
             fill_strings = {"hemisphere": self.hemisphere, "day": self.date}
             path = path.substitute(fill_strings)
             logger.info("Downloading %s", path)
-            print type(self)
+            print(type(self))
             # urllib.urlretrieve(path, "/tmp/oi.nc")
-        except Exception, e:
-            raise e
+        except Exception as err:
+            raise err
 
     def post_invoke(self):
         pass
