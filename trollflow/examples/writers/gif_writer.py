@@ -1,5 +1,5 @@
 from trollflow.workflow_component import AbstractWorkflowComponent
-import Image
+from PIL import Image
 
 
 class Writer(AbstractWorkflowComponent):
@@ -12,8 +12,8 @@ class Writer(AbstractWorkflowComponent):
         try:
             img = Image.fromarray(context[self.slots[0]]["uri"], 'w')
             img.save(context[self.slots[0]]["content"])
-        except Exception, e:
-            raise e
+        except Exception as err:
+            raise err
 
     def post_invoke(self):
         pass

@@ -1,9 +1,6 @@
 import yaml
 import logging
-try:
-    import Queue as queue
-except ImportError:
-    import queue
+import six.moves.queue as queue
 from threading import Thread
 import time
 import gc
@@ -57,7 +54,8 @@ class WorkflowStreamer(Thread):
             context = self.build_context(self.workflow)
             context['content'] = data
             self.runner.run(context)
-
+            # Clear data and context
+            data, context = None, None
             if self.force_gc:
                 num = gc.collect()
                 logger.debug("Garbage collection cleaned %s objects", num)
@@ -83,7 +81,7 @@ class WorkflowStreamer(Thread):
         components = config["Workflow"]
 
         for component in components:
-            module, slots = component.items()[0]
+            module, slots = tuple(component.items())[0]
             del module
             for slot_name, slot_details in slots.items():
                 if slot_name not in context:
